@@ -1,6 +1,6 @@
 package cinema;
 
-import org.springframework.http.HttpEntity;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,11 +23,13 @@ public class PurchaseController {
     @PostMapping(value = "/purchase")
     public ResponseEntity<Object> doPurchase(@RequestBody Seat seat) {
         try {
-            int price = purchaseService.successfulPurchase(seat);
+
+            PurchaseSuccess purchaseSuccess = purchaseService.successfulPurchase(seat);
+
             Map<String, Object> body = new LinkedHashMap<>();
-            body.put("row", seat.getRow());
-            body.put("column", seat.getColumn());
-            body.put("price", price); // Include the row, column, and price
+            body.put("token", purchaseSuccess.getToken());
+            body.put("ticket", purchaseSuccess.getTicket());
+
             return new ResponseEntity<>(body, HttpStatus.OK);
         } catch (OutOfBoundsException e) {
             Map<String, Object> errorBody = new LinkedHashMap<>();
